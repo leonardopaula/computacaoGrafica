@@ -9,8 +9,8 @@
 // Todas informações vindas do .mtl (pikachu)
 struct Textura {
     unsigned int id; // Id na GPU
-    string tipo;     // Tipo da textura
-    string caminho; // Caminho para a textura
+    std::string tipo;     // Tipo da textura
+    std::string caminho; // Caminho para a textura
     int Ns;         // Ns 10
     float Ni;       // Ni 1.0
     float d;        // d 1.0
@@ -23,7 +23,7 @@ struct Textura {
 };
 
 // Vertices
-struct Vertices {
+struct Vertice {
     glm::vec3 Posicao;      // Posições (v)
     glm::vec3 CoordTextura; // Coordenadas de textura (vt)
     glm::vec3 Normal;       // Normais (vn)
