@@ -23,7 +23,8 @@ struct Textura {
 };
 
 // Vertices
-struct Vertice {
+struct Vertice 
+{
     glm::vec3 Posicao;      // Posições (v)
     glm::vec3 CoordTextura; // Coordenadas de textura (vt)
     glm::vec3 Normal;       // Normais (vn)

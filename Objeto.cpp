@@ -47,8 +47,6 @@ void Objeto::trataLinha(string linha)
         vector<string> dados;
         dados = explode(linha, ' ');
         string tipo = dados[0].c_str();
-        
-        //cout << tipo << endl;
 
         for(int i = 1; i < dados.size(); i++)
         {
@@ -56,26 +54,55 @@ void Objeto::trataLinha(string linha)
             {
                 if (tipo == "v") // Vertices
                 {
-                    //vertices.push_back(atof(dados[i].c_str()));
-                    //cout << "|" << dados[i] << "|";
+                    // Adiciona vértices
+                    v.push_back(atof(dados[i].c_str()));
                 } else if (tipo == "f") // Faces
                 {
                     //indices.push_back(atoi(dados[i].c_str())-1);
                     //cout << "|" << dados[i] << "|";
                 } else if (tipo == "vn") // Vetor normal
                 {
-                    //normais.push_back(atof(dados[i].c_str()));
-                } else if (tipo == "mtllib") {
 
+                    vn.push_back(atof(dados[i].c_str()));
+
+                } else if (tipo == "mtllib") 
+                {
                     // Armazenamos o arquivo com as texturas
                     arquivoMtl = dados[i].c_str();
 
-                } else if (tipo == "vt") {
+                } else if (tipo == "vt") 
+                {
+                    vt.push_back(atof(dados[i].c_str()));
+                } else if (tipo == "usemtl") 
+                {
+                    cout << "Ativa Textura" << tipo << endl;
                 } else {
                     //cout << "-> " << tipo << endl;
                 }
             }
         }
+    }
+}
+
+void Objeto::processaMalha()
+{
+    glm::vec3 __v;      // Posições (v)
+    glm::vec3 __vt; // Coordenadas de textura (vt)
+    glm::vec3 __vn;
+    
+    for(int i; i < sizeof(v); i++)
+    {
+        __v.x  = v[i];
+        __vt.x = vt[i];
+        __vn.x = vn[i++];
+        
+        __v.y  = v[i];
+        __vt.y = vt[i];
+        __vn.y = vn[i++];
+        
+        __v.z  = v[i];
+        __vt.z = vt[i];
+        __vn.z = vn[i];
     }
 }
 
