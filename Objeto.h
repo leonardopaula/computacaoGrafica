@@ -5,17 +5,23 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
 class Objeto {
 public:
     /* Dados do objeto */
-    std::vector<Malha> malhas;
+    vector<Malha> malhas;
     
-    Objeto(std::string const &caminhoObjeto);
+    Objeto(string const &caminhoArquivo);
 
     Objeto(const Objeto& orig);
     virtual ~Objeto();
 private:
-
+    string arquivoMtl;
+    
+    const vector<string> explode(const string& s, const char& c);
+    void carregaArquivo(string const &caminhoArquivo);
+    void trataLinha(string linha);
 };
 
 #endif /* OBJETO_H */
