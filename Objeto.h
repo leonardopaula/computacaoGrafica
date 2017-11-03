@@ -25,7 +25,6 @@ private:
     vector<GLfloat> v;
     vector<GLfloat> vt;
     vector<GLfloat> vn;
-    
 
     const vector<string> explode(const string& s, const char& c);
     void carregaArquivo(string const &caminhoArquivo);

@@ -20,11 +20,10 @@ void Objeto::carregaArquivo(std::string const &caminhoArquivo)
     {
         string linha;
         ifstream handleArquivo;
-        stringstream stringStream;
 
-        handleArquivo.exceptions(ifstream::badbit);
+        handleArquivo.exceptions(ifstream::badbit|ifstream::failbit);
         handleArquivo.open(caminhoArquivo.c_str(), ifstream::in);
-            
+
         // Percorre o arquivo linha a linha
         while(getline(handleArquivo, linha))
         {
@@ -68,7 +67,12 @@ void Objeto::trataLinha(string linha)
                 } else if (tipo == "mtllib") 
                 {
                     // Armazenamos o arquivo com as texturas
-                    arquivoMtl = dados[i].c_str();
+                    std::stringstream ss;
+                    ss << "./objs/Pikachus/" << dados[i].c_str();
+                    arquivoMtl = ss.str();
+                    
+                    // Carrega texturas
+                    carregaArquivo(arquivoMtl);
 
                 } else if (tipo == "vt") 
                 {
@@ -76,8 +80,11 @@ void Objeto::trataLinha(string linha)
                 } else if (tipo == "usemtl") 
                 {
                     cout << "Ativa Textura" << tipo << endl;
+                } else if (tipo == "newmtl")
+                {
+                    cout << "Material: " << dados[i] << endl;
                 } else {
-                    //cout << "-> " << tipo << endl;
+                    cout << "-> " << tipo << endl;
                 }
             }
         }
@@ -86,10 +93,13 @@ void Objeto::trataLinha(string linha)
 
 void Objeto::processaMalha()
 {
-    glm::vec3 __v;      // Posições (v)
-    glm::vec3 __vt; // Coordenadas de textura (vt)
+    // Dados para repassar à malha
+    vector<Vertice> vv;
+    glm::vec3 __v; 
+    glm::vec3 __vt;
     glm::vec3 __vn;
     
+    Vertice vertice;
     for(int i; i < sizeof(v); i++)
     {
         __v.x  = v[i];
@@ -103,7 +113,14 @@ void Objeto::processaMalha()
         __v.z  = v[i];
         __vt.z = vt[i];
         __vn.z = vn[i];
+        
+        vertice.Posicao = __v;
+        vertice.CoordTextura = __vt;
+        vertice.Normal  = __vn;
+
+        vv.push_back(vertice);
     }
+    
 }
 
 const vector<string> Objeto::explode(const string& s, const char& c)
@@ -113,8 +130,11 @@ const vector<string> Objeto::explode(const string& s, const char& c)
 
     for(int i = 0; i < s.length(); i++)
     {
-        if(s[i] != c && s[i] != ' ') buff+=s[i]; else
-        if(s[i] == c && buff != "") { v.push_back(buff); buff = ""; }
+        if(s[i] != c && s[i] != ' ' && s[i] != '\t') buff+=s[i]; else
+        if(s[i] == c && buff != "") 
+        { 
+            v.push_back(buff); buff = ""; 
+        }
     }
     if (buff != "") v.push_back(buff);
 
