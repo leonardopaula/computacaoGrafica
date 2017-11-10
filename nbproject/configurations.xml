@@ -12,6 +12,10 @@
                    displayName="Resource Files"
                    projectFiles="true">
     </logicalFolder>
+    <logicalFolder name="shaders" displayName="shaders" projectFiles="true">
+      <itemPath>shaders/shader.basic_light.fs</itemPath>
+      <itemPath>shaders/shader.basic_light.vs</itemPath>
+    </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
@@ -31,7 +35,14 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
     <itemPath>.gitignore</itemPath>
+    <itemPath>Camera.h</itemPath>
+    <itemPath>Janela.cpp</itemPath>
+    <itemPath>Janela.h</itemPath>
+    <itemPath>shader.h</itemPath>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>shaders</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -42,15 +53,23 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-std=c++0x</commandLine>
+          <commandLine>-std=c++0x -lGLEW -lglfw -lGL -lX11 -lXi -lXrandr -lXxf86vm -lXinerama -lXcursor -lrt -lm -pthread</commandLine>
         </ccTool>
         <linkerTool>
-          <commandLine>-lGLEW -lglfw -lGL -lX11 -lXi -lXrandr -lXxf86vm -lXinerama -lXcursor -lrt -lm -pthread</commandLine>
+          <linkerLibItems>
+            <linkerOptionItem>-lGLEW -lglfw -lGL -lX11 -lXi -lXrandr -lXxf86vm -lXinerama -lXcursor -lrt -lm -pthread</linkerOptionItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path=".gitignore" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Camera.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Estruturas.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Janela.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Janela.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Malha.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -61,6 +80,12 @@
       <item path="Objeto.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="shader.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="shaders/shader.basic_light.fs" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="shaders/shader.basic_light.vs" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -85,7 +110,13 @@
       </compileType>
       <item path=".gitignore" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Camera.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Estruturas.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Janela.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Janela.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Malha.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -96,6 +127,12 @@
       <item path="Objeto.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="shader.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="shaders/shader.basic_light.fs" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="shaders/shader.basic_light.vs" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

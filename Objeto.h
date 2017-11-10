@@ -11,20 +11,28 @@ using namespace std;
 class Objeto {
 public:
     /* Dados do objeto */
-    vector<Malha> malhas;
-    
+    vector<Malha*> malhas;
     Objeto(string const &caminhoArquivo);
-
     Objeto(const Objeto& orig);
     virtual ~Objeto();
+    void desenha(Shader shader);
+
 private:
     string arquivoMtl;
-    int tipoLeitura;
 
     // Vetores para leitura temporária
     vector<GLfloat> v;
     vector<GLfloat> vt;
     vector<GLfloat> vn;
+    vector<Textura> texturas;
+    int iTextura = -1;
+    string tipoLeitura = "";
+    
+    vector<unsigned int> vf;
+    vector<unsigned int> vtf;
+    vector<unsigned int> vnf;
+    
+    Textura t;
 
     const vector<string> explode(const string& s, const char& c);
     void carregaArquivo(string const &caminhoArquivo);

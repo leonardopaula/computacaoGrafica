@@ -12,6 +12,14 @@ Objeto::Objeto(std::string const &caminhoArquivo)
     carregaArquivo(caminhoArquivo);
 }
 
+void Objeto::desenha(Shader shader)
+{
+    for(int i=0; i < malhas.size(); i++)
+    {
+        malhas[i]->desenha(shader);
+    }
+}
+
 void Objeto::carregaArquivo(std::string const &caminhoArquivo)
 {
     cout << "Carregando arquivo: " << caminhoArquivo.c_str() << endl;
@@ -27,7 +35,9 @@ void Objeto::carregaArquivo(std::string const &caminhoArquivo)
         // Percorre o arquivo linha a linha
         while(getline(handleArquivo, linha))
         {
-            trataLinha(linha);
+            //cout << linha << endl;
+            if (linha != "\r")
+                trataLinha(linha); 
         }
             
         handleArquivo.close();
@@ -51,19 +61,51 @@ void Objeto::trataLinha(string linha)
         {
             if (tipo != "#")
             {
+                if (tipoLeitura == "f" && tipo != "f")
+                    processaMalha();
+                tipoLeitura = tipo;
+                
                 if (tipo == "v") // Vertices
                 {
                     // Adiciona vértices
+                    v.push_back(atof(dados[i++].c_str()));
+                    v.push_back(atof(dados[i++].c_str()));
                     v.push_back(atof(dados[i].c_str()));
+
                 } else if (tipo == "f") // Faces
                 {
-                    //indices.push_back(atoi(dados[i].c_str())-1);
-                    //cout << "|" << dados[i] << "|";
+                    
+                    vector<string> dadosFace;
+                    // São 3 grupos
+                    for(int j = 0; j < 3; j++)
+                    {
+                        dadosFace = explode(dados[i++].c_str(), '/');
+                    
+                        // São índices de arrays (começam em 0)
+                        vf.push_back(atoi(dadosFace[0].c_str())-1);
+                        vtf.push_back(atoi(dadosFace[1].c_str())-1);
+                        vnf.push_back(atoi(dadosFace[2].c_str())-1);
+                    }
+
                 } else if (tipo == "vn") // Vetor normal
                 {
 
                     vn.push_back(atof(dados[i].c_str()));
+                } else if (tipo == "usemtl") 
+                {
+                    if (iTextura >= 0)
+                    {
+                        //processaMalha();
+                    }
 
+                    for(int j = 0; j < texturas.size(); j++)
+                    {
+                        if (texturas.at(j).tipo ==  dados[i].c_str())
+                        {
+                            iTextura = j; // Retorna o índice no vetor de texturas
+                            break;
+                        }
+                    }
                 } else if (tipo == "mtllib") 
                 {
                     // Armazenamos o arquivo com as texturas
@@ -77,14 +119,34 @@ void Objeto::trataLinha(string linha)
                 } else if (tipo == "vt") 
                 {
                     vt.push_back(atof(dados[i].c_str()));
-                } else if (tipo == "usemtl") 
-                {
-                    cout << "Ativa Textura" << tipo << endl;
                 } else if (tipo == "newmtl")
                 {
-                    cout << "Material: " << dados[i] << endl;
+                    if (t.tipo != dados[i].c_str() && t.tipo != "")
+                    {
+                        texturas.push_back(t);
+                    }
+                    t.caminho = arquivoMtl;
+                    t.tipo    = dados[i].c_str();
+
+                } else if (tipo == "Ka") {
+                    t.Ka.x = atof(dados[i++].c_str());
+                    t.Ka.y = atof(dados[i++].c_str());
+                    t.Ka.z = atof(dados[i++].c_str());
+
+                } else if (tipo == "Kd") {
+                    t.Kd.x = atof(dados[i++].c_str());
+                    t.Kd.y = atof(dados[i++].c_str());
+                    t.Kd.z = atof(dados[i++].c_str());
+
+                } else if (tipo == "Ks") {
+                    t.Ks.x = atof(dados[i++].c_str());
+                    t.Ks.y = atof(dados[i++].c_str());
+                    t.Ks.z = atof(dados[i++].c_str());
+
+                } else if (tipo == "map_Kd") {
+                    t.caminho = dados[i].c_str();
                 } else {
-                    cout << "-> " << tipo << endl;
+                    //cout << "-> " << tipo << dados[i] << endl;
                 }
             }
         }
@@ -100,8 +162,10 @@ void Objeto::processaMalha()
     glm::vec3 __vn;
     
     Vertice vertice;
-    for(int i; i < sizeof(v); i++)
+    cout << v.size() << "TAM" << endl;
+    for(int i = 0; i < v.size(); i++)
     {
+        
         __v.x  = v[i];
         __vt.x = vt[i];
         __vn.x = vn[i++];
@@ -113,14 +177,23 @@ void Objeto::processaMalha()
         __v.z  = v[i];
         __vt.z = vt[i];
         __vn.z = vn[i];
-        
-        vertice.Posicao = __v;
+
+        cout << __v.x << "," << __v.y << "," << __v.z << endl;
+
+        vertice.Posicao      = __v;
         vertice.CoordTextura = __vt;
-        vertice.Normal  = __vn;
+        vertice.Normal       = __vn;
 
         vv.push_back(vertice);
     }
+
+    malhas.push_back(new Malha(vv, vf, texturas[iTextura]));
     
+    // Limpa dados locais
+    //v.clear();
+    //vt.clear();
+    //vn.clear();
+    //vf.clear();
 }
 
 const vector<string> Objeto::explode(const string& s, const char& c)
@@ -130,7 +203,7 @@ const vector<string> Objeto::explode(const string& s, const char& c)
 
     for(int i = 0; i < s.length(); i++)
     {
-        if(s[i] != c && s[i] != ' ' && s[i] != '\t') buff+=s[i]; else
+        if(s[i] != c && s[i] != ' ' && s[i] != '\t' && s[i] != '\r') buff+=s[i]; else
         if(s[i] == c && buff != "") 
         { 
             v.push_back(buff); buff = ""; 

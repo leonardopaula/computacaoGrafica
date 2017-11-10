@@ -19,7 +19,6 @@ struct Textura {
     glm::vec3 Ka;   // Ka 0.5 0.5 0.5
     glm::vec3 Kd;   // Kd 0.9 0.9 0.9
     glm::vec3 Ks;   // Ks 0.0 0.0 0.0
-    
 };
 
 // Vertices
